@@ -28,7 +28,9 @@ public class BioAuthManager {
 
     private static BioAuthManager instance;
 
-    private BioAuthManager() {};
+    private BioAuthManager() {
+        keyManager = KeyManager.getInstance();
+    };
 
     public static BioAuthManager getInstance() {
         if (instance == null)
@@ -39,7 +41,7 @@ public class BioAuthManager {
         return instance;
     }
 
-    private KeyManager keyManager = KeyManager.getInstance();
+    private KeyManager keyManager;
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
@@ -84,7 +86,7 @@ public class BioAuthManager {
                     .setDescription("생체 인증 설명")
                     // BIOMETRIC_STRONG 은 안드로이드 11 에서 정의한 클래스 3 생체 인식을 사용하는 인증
                     // BIOMETRIC_WEAK 은 안드로이드 11 에서 정의한 클래스 2 생체 인식을 사용하는 인증
-                    // DEVICE_CREDENTIAL 은 화면 잠금 사용자 ㅇ니증 정보를 사용하는 인증 - 사용자의 PIN, 패턴 또는 비밀번호
+                    // DEVICE_CREDENTIAL 은 화면 잠금 사용자 인증 정보를 사용하는 인증 - 사용자의 PIN, 패턴 또는 비밀번호
                     .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
                     .setConfirmationRequired(false) // 명시적인 사용자 작업 ( 생체 인식 전 한번더 체크 ) 없이 인증할건지 default : true
                     .setNegativeButtonText("취소")
@@ -93,7 +95,7 @@ public class BioAuthManager {
             biometricPrompt.authenticate(promptInfo);
 
         }
-        else // api 23 ( ANDROID 6.0 ) 부터 api 28 ( ANDROID 9.0 ) 까지는 fingerprint 사용
+        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)// api 23 ( ANDROID 6.0 ) 부터 api 28 ( ANDROID 9.0 ) 까지는 fingerprint 사용
         {
             Log.d("fingerprint", "fingerprint start");
 

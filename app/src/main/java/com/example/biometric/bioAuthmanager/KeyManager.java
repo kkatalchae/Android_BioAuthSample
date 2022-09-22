@@ -40,8 +40,13 @@ public class KeyManager {
     @Getter @Setter
     private CancellationSignal signal;
 
+    /**
+     * 지문 인증을 사용하기 위한 키를 생성하는 함수
+     */
     public void generateKey() {
         try {
+
+            // 안드로이드에서 기본적으로 제공하는 KeyStore 인듯하다 ( AndroidKeyStore )
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
 
@@ -60,7 +65,10 @@ public class KeyManager {
         }
     }
 
-
+    /**
+     * 키스토어 저장된 키를 암호화하는 함수
+     * @return Boolean
+     */
     public Boolean cipherInit() {
         try {
             cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/"

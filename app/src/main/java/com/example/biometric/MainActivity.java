@@ -16,11 +16,13 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private TextView title;
 
-    private BioAuthManager bioAuthManager = BioAuthManager.getInstance();
+    private BioAuthManager bioAuthManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bioAuthManager = BioAuthManager.getInstance();
 
         // UI 관련
         layout = new LinearLayout(this);
