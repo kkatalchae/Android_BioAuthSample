@@ -27,9 +27,7 @@ public class BioAuthManager {
 
     private static BioAuthManager instance;
 
-    private BioAuthManager() {
-        keyManager = KeyManager.getInstance();
-    };
+    private BioAuthManager() { };
 
     public static BioAuthManager getInstance() {
         if (instance == null)
@@ -54,6 +52,8 @@ public class BioAuthManager {
     private BiometricPrompt.CryptoObject bioCryptoObject; // over api 28
 
     public void authenticate(FragmentActivity activity, Context context) {
+
+        keyManager = KeyManager.getInstance();
         // api 28 ( ANDROID 9.0 ) 이상은 biometricPrompt 사용
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Log.d("bioAuth", "start biometricPrompt");
@@ -140,11 +140,10 @@ public class BioAuthManager {
                 {
 
                     Cipher cipher = keyManager.getCipher();
-                    CancellationSignal signal = keyManager.getSignal();
 
                     cryptoObject = new FingerprintManager.CryptoObject(cipher);
 
-                    fingerprintManager.authenticate(cryptoObject, signal, 0, new FingerprintManager.AuthenticationCallback() {
+                    fingerprintManager.authenticate(cryptoObject, new CancellationSignal(), 0, new FingerprintManager.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationError(int errorCode, CharSequence errString) {
                             super.onAuthenticationError(errorCode, errString);

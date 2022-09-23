@@ -17,9 +17,7 @@ public class KeyManager {
 
     private static KeyManager instance;
 
-    private KeyManager() {
-        signal = new CancellationSignal();
-    };
+    private KeyManager() { };
 
     public static KeyManager getInstance() {
         if (instance == null)
@@ -37,8 +35,6 @@ public class KeyManager {
     @Getter @Setter
     private Cipher cipher;
 
-    @Getter @Setter
-    private CancellationSignal signal;
 
     /**
      * 지문 인증을 사용하기 위한 키를 생성하는 함수
