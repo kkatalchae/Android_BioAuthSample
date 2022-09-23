@@ -2,7 +2,6 @@ package com.example.biometric.bioAuthmanager;
 
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
-
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -80,17 +79,27 @@ public class BioAuthManager {
                 }
             });
 
+            // DEVICE_CREDENTIAL 및 BIOMETRIC_STRING | DEVICE_CREDENTIAL 은 안드로이드 10 이하에서 지원되지 않는다.
+            // 안드로이드 10 이하에서 PIN 이나 패턴, 비밀번호가 있는지 확인하려면 KeyguardManager.isDeviceSecure() 함수를 사용할 것
             promptInfo = new BiometricPrompt.PromptInfo.Builder()
                     .setTitle("지문 인증")
                     .setSubtitle("기기에 등록된 지문을 이용하여 지문을 인증해주세요.")
                     .setDescription("생체 인증 설명")
-                    // BIOMETRIC_STRONG 은 안드로이드 11 에서 정의한 클래스 3 생체 인식을 사용하는 인증
-                    // BIOMETRIC_WEAK 은 안드로이드 11 에서 정의한 클래스 2 생체 인식을 사용하는 인증
+                    // BIOMETRIC_STRONG 은 안드로이드 11 에서 정의한 클래스 3 생체 인식을 사용하는 인증 - 암호회된 키 필요
+                    // BIOMETRIC_WEAK 은 안드로이드 11 에서 정의한 클래스 2 생체 인식을 사용하는 인증 - 암호화된 키까지 필요하지는 않음
                     // DEVICE_CREDENTIAL 은 화면 잠금 사용자 인증 정보를 사용하는 인증 - 사용자의 PIN, 패턴 또는 비밀번호
-                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
                     .setConfirmationRequired(false) // 명시적인 사용자 작업 ( 생체 인식 전 한번더 체크 ) 없이 인증할건지 default : true
                     .setNegativeButtonText("취소")
                     .build();
+
+            keyManager.generateKey();
+
+            if (keyManager.cipherInit())
+            {
+                bioCryptoObject = new BiometricPrompt.CryptoObject(keyManager.getCipher());
+                biometricPrompt.authenticate(promptInfo, bioCryptoObject);
+            }
 
             biometricPrompt.authenticate(promptInfo);
 
