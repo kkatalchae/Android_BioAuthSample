@@ -58,32 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         button.setOnClickListener(view -> {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            {
-                BiometricManager biometricManager = BiometricManager.from(this);
-                switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG))
-                {
-                    case BiometricManager.BIOMETRIC_SUCCESS:
-                        Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-                        Log.e("MY_APP_TAG", "No biometric features available on this device.");
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-                        Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                        // Prompts the user to create credentials that your app accepts.
-                        final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-                        enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
-                        startActivityForResult(enrollIntent, 1);
-                        break;
-                }
-            }
-
-
             bioAuthManager.authenticate(this ,getApplicationContext());
         });
 
